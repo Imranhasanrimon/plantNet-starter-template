@@ -18,7 +18,7 @@ app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(morgan('dev'))
+// app.use(morgan('dev'))
 
 const verifyToken = async (req, res, next) => {
   const token = req.cookies?.token
@@ -48,6 +48,23 @@ const client = new MongoClient(uri, {
 })
 async function run() {
   try {
+    const usersCollection = client.db('plantNetDB').collection('users');
+
+    //save or update user in DB-----
+    app.post('/users/:email', async (req, res) => {
+      const email = req.params.email;
+      const userInfo = req.body;
+      const query = { email };
+      const isExists = await usersCollection.findOne(query);
+
+      if (isExists) {
+        return res.send(isExists)
+      }
+
+      const result = await usersCollection.insertOne(userInfo);
+      res.send(result)
+    })
+
     // Generate jwt token
     app.post('/jwt', async (req, res) => {
       const email = req.body
