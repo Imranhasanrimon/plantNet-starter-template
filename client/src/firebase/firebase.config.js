@@ -10,3 +10,6 @@ const firebaseConfig = {
 }
 
 export const app = initializeApp(firebaseConfig)
+
+
+// console.log('hello');
