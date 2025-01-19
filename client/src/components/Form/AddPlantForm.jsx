@@ -1,9 +1,17 @@
+import { useState } from 'react';
 import { imageUpload } from './../../api/utils';
 import useAuth from './../../hooks/useAuth';
+import { TbFidgetSpinner } from 'react-icons/tb';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import toast from 'react-hot-toast';
 const AddPlantForm = () => {
   const { user } = useAuth()
+  const [uploadButtonText, setUploadButtonText] = useState({ name: 'Upload Button' })
+  const [loading, setLoading] = useState(false)
+  const axiosSecure = useAxiosSecure()
   const handleSubmit = async e => {
     e.preventDefault();
+    setLoading(true)
     const form = e.target;
     const name = form.name.value;
     const description = form.description.value;
@@ -30,7 +38,16 @@ const AddPlantForm = () => {
       image: imageUrl,
       seller
     }
-    console.table(plantData)
+
+    try {
+      //post request
+      await axiosSecure.post('/plants', plantData)
+      toast.success('Data Added Successfully')
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false)
+    }
   }
   return (
     <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
@@ -120,6 +137,7 @@ const AddPlantForm = () => {
                 <div className='flex flex-col w-max mx-auto text-center'>
                   <label>
                     <input
+                      onChange={(e) => setUploadButtonText(e.target.files[0])}
                       className='text-sm cursor-pointer w-36 hidden'
                       type='file'
                       name='image'
@@ -128,11 +146,12 @@ const AddPlantForm = () => {
                       hidden
                     />
                     <div className='bg-lime-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-lime-500'>
-                      Upload
+                      {uploadButtonText.name}
                     </div>
                   </label>
                 </div>
               </div>
+              {uploadButtonText.size && <p className='text-lime-500 font-semibold text-lg'>size: {uploadButtonText.size} Bytes</p>}
             </div>
 
             {/* Submit Button */}
@@ -140,7 +159,11 @@ const AddPlantForm = () => {
               type='submit'
               className='w-full p-3 mt-5 text-center font-medium text-white transition duration-200 rounded shadow-md bg-lime-500 '
             >
-              Save & Continue
+              {loading ? (
+                <TbFidgetSpinner className='animate-spin m-auto' />
+              ) : (
+                'Save & Continue'
+              )}
             </button>
           </div>
         </div>

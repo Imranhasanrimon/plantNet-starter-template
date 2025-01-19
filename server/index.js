@@ -56,9 +56,14 @@ async function run() {
       const result = await usersCollection.find().toArray();
       res.send(result)
     })
+    //get all plants
+    app.get('/plants', async (req, res) => {
+      const result = await plantsCollection.find().toArray();
+      res.send(result)
+    })
 
     //save a plant data in DB-----
-    app.post('/plants', async (req, res) => {
+    app.post('/plants', verifyToken, async (req, res) => {
       const plant = req.body;
       const result = await plantsCollection.insertOne(plant);
       res.send(result)
