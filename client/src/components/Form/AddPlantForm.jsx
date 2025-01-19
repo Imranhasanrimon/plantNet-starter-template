@@ -1,7 +1,40 @@
+import { imageUpload } from './../../api/utils';
+import useAuth from './../../hooks/useAuth';
 const AddPlantForm = () => {
+  const { user } = useAuth()
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const description = form.description.value;
+    const category = form.category.value;
+    const price = parseFloat(form.price.value);
+    const quantity = parseInt(form.quantity.value);
+    const image = form.image.files[0];
+    const imageUrl = await imageUpload(image)
+
+    //seller info
+    const seller = {
+      name: user?.displayName,
+      image: user?.photoURL,
+      email: user?.email,
+    }
+
+    //plant data object
+    const plantData = {
+      name,
+      description,
+      category,
+      price,
+      quantity,
+      image: imageUrl,
+      seller
+    }
+    console.table(plantData)
+  }
   return (
     <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
           <div className='space-y-6'>
             {/* Name */}
