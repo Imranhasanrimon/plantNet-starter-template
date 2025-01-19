@@ -6,7 +6,7 @@ import useAxiosSecure from '../../hooks/useAxiosSecure';
 import toast from 'react-hot-toast';
 const AddPlantForm = () => {
   const { user } = useAuth()
-  const [uploadButtonText, setUploadButtonText] = useState({ name: 'Upload Button' })
+  const [uploadImage, setUploadImage] = useState({ image: { name: 'Upload Button' } });
   const [loading, setLoading] = useState(false)
   const axiosSecure = useAxiosSecure()
   const handleSubmit = async e => {
@@ -137,7 +137,12 @@ const AddPlantForm = () => {
                 <div className='flex flex-col w-max mx-auto text-center'>
                   <label>
                     <input
-                      onChange={(e) => setUploadButtonText(e.target.files[0])}
+                      onChange={(e) => setUploadImage(
+                        {
+                          image: e.target.files[0],
+                          url: URL.createObjectURL(e.target.files[0])
+                        }
+                      )}
                       className='text-sm cursor-pointer w-36 hidden'
                       type='file'
                       name='image'
@@ -146,12 +151,15 @@ const AddPlantForm = () => {
                       hidden
                     />
                     <div className='bg-lime-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-lime-500'>
-                      {uploadButtonText.name}
+                      {uploadImage?.image?.name}
                     </div>
                   </label>
                 </div>
               </div>
-              {uploadButtonText.size && <p className='text-lime-500 font-semibold text-lg'>size: {uploadButtonText.size} Bytes</p>}
+              {uploadImage?.image?.size && <div className='flex items-center gap-5 mt-3 '>
+                <p className='text-lime-500 font-semibold text-lg'>size: {uploadImage?.image.size} Bytes</p>
+                <img className='w-28 h-20 object-cover rounded-md border border-lime-500 p-1' src={uploadImage?.url} alt="" />
+              </div>}
             </div>
 
             {/* Submit Button */}
