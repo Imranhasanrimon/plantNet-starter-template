@@ -56,9 +56,17 @@ async function run() {
       const result = await usersCollection.find().toArray();
       res.send(result)
     })
+
     //get all plants
     app.get('/plants', async (req, res) => {
       const result = await plantsCollection.find().toArray();
+      res.send(result)
+    })
+
+    //get a single plant
+    app.get('/plants/:id', async (req, res) => {
+      const id = req.params.id;
+      const result = await plantsCollection.findOne({ _id: new ObjectId(id) });
       res.send(result)
     })
 
