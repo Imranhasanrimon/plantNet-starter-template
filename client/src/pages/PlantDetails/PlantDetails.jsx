@@ -16,7 +16,7 @@ const PlantDetails = () => {
   }
 
   const { id } = useParams();
-  const { data: plant = {}, isLoading, refetch } = useQuery({
+  const { data: plant = {}, isLoading } = useQuery({
     queryKey: ['plant', id],
     queryFn: async () => {
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/plants/${id}`);
@@ -74,9 +74,7 @@ const PlantDetails = () => {
             <div>Seller: {seller?.name}</div>
 
             <img
-              className='rounded-full'
-              height='30'
-              width='30'
+              className='rounded-full w-8 h-8'
               alt='Avatar'
               referrerPolicy='no-referrer'
               src={seller?.image}

@@ -30,12 +30,10 @@ const Navbar = () => {
                   <div className='hidden md:block'>
                     {/* Avatar */}
                     <img
-                      className='rounded-full'
+                      className='rounded-full h-8 w-8'
                       referrerPolicy='no-referrer'
                       src={user && user.photoURL ? user.photoURL : avatarImg}
                       alt='profile'
-                      height='30'
-                      width='30'
                     />
                   </div>
                 </div>

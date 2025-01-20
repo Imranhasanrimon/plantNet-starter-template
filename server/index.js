@@ -50,6 +50,7 @@ async function run() {
   try {
     const usersCollection = client.db('plantNetDB').collection('users');
     const plantsCollection = client.db('plantNetDB').collection('plants');
+    const ordersCollection = client.db('plantNetDB').collection('orders');
 
     //get all users
     app.get('/users', async (req, res) => {
@@ -74,6 +75,13 @@ async function run() {
     app.post('/plants', verifyToken, async (req, res) => {
       const plant = req.body;
       const result = await plantsCollection.insertOne(plant);
+      res.send(result)
+    })
+
+    //save a order data in DB-----
+    app.post('/orders', verifyToken, async (req, res) => {
+      const orderInfo = req.body;
+      const result = await ordersCollection.insertOne(orderInfo);
       res.send(result)
     })
 

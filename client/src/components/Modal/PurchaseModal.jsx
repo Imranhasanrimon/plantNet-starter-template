@@ -6,14 +6,49 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import Button from '../Shared/Button/Button'
 import useAuth from './../../hooks/useAuth';
+import { toast } from 'react-hot-toast';
 
 const PurchaseModal = ({ closeModal, isOpen, plant }) => {
-  const { name, category, description, image, seller, price, quantity } = plant;
   const { user } = useAuth()
-  // Total Price Calculation
+  const { name, category, seller, price, quantity, _id } = plant;
+  const [totalQuantity, setTotalQuantity] = useState(1)
+  const [totalPrice, setTotalPrice] = useState(0)
+  const [purchaseInfo, setPurchaseInfo] = useState({
+    customer: {
+      name: user?.displayName,
+      email: user?.email,
+      image: user?.photoURL
+    },
+
+    plantId: _id,
+    price: totalPrice,
+    quantity: totalQuantity,
+    seller: seller?.email,
+    address: '',
+    status: 'pending'
+  })
+
+  const handleQuantity = value => {
+    if (value > quantity) {
+      return toast.error(`Only ${quantity} units left!`)
+    }
+    if (value < 1) {
+      return toast.error('Please enter a valid quantity!')
+    }
+
+    setTotalQuantity(value)
+    setTotalPrice(value * price)
+    setPurchaseInfo(prv => {
+      return { ...prv, quantity: value, price: value * price }
+    })
+  }
+  console.table(purchaseInfo);
+  const handlePurchase = async () => {
+    //do something
+  }
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -55,7 +90,7 @@ const PurchaseModal = ({ closeModal, isOpen, plant }) => {
                   <p className='text-sm text-gray-500'>Category: {category}</p>
                 </div>
                 <div className='mt-2'>
-                  <p className='text-sm text-gray-500'>Customer: {user.displayName}</p>
+                  <p className='text-sm text-gray-500'>Customer: {user?.displayName}</p>
                 </div>
 
                 <div className='mt-2'>
@@ -71,7 +106,7 @@ const PurchaseModal = ({ closeModal, isOpen, plant }) => {
                     Quantity
                   </label>
                   <input
-                    max={quantity}
+                    onChange={(e) => handleQuantity(parseInt(e.target.value))}
                     className=' p-2 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                     name='quantity'
                     id='quantity'
@@ -88,6 +123,10 @@ const PurchaseModal = ({ closeModal, isOpen, plant }) => {
                     Address
                   </label>
                   <input
+                    onChange={e => setPurchaseInfo(prv => {
+                      return { ...prv, address: e.target.value }
+                    })}
+
                     className=' p-2 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                     name='address'
                     id='address'
@@ -99,7 +138,7 @@ const PurchaseModal = ({ closeModal, isOpen, plant }) => {
 
                 {/* button */}
                 <div className='mt-4'>
-                  <Button label={'Purchase'} />
+                  <Button onClick={handlePurchase} label={`Pay $${totalPrice}`} />
                 </div>
 
               </DialogPanel>
