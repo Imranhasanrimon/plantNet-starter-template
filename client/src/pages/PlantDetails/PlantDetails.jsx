@@ -16,7 +16,7 @@ const PlantDetails = () => {
   }
 
   const { id } = useParams();
-  const { data: plant = {}, isLoading } = useQuery({
+  const { data: plant = {}, isLoading, refetch } = useQuery({
     queryKey: ['plant', id],
     queryFn: async () => {
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/plants/${id}`);
@@ -101,7 +101,7 @@ const PlantDetails = () => {
           </div>
           <hr className='my-6' />
 
-          <PurchaseModal plant={plant} closeModal={closeModal} isOpen={isOpen} />
+          <PurchaseModal plant={plant} refetch={refetch} closeModal={closeModal} isOpen={isOpen} />
         </div>
       </div>
     </Container>

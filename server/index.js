@@ -71,6 +71,47 @@ async function run() {
       res.send(result)
     })
 
+    //get all orders of a single user
+    app.get('/orders/user/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { "customer.email": email }
+      const result = await ordersCollection.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $addFields: {
+            plantId: { $toObjectId: '$plantId' }
+          },
+        },
+        {
+          $lookup: {
+            from: 'plants',
+            localField: 'plantId',
+            foreignField: '_id',
+            as: 'plants'
+          }
+        },
+        {
+          $unwind: '$plants'
+        },
+        {
+          $addFields: {
+            name: '$plants.name',
+            image: '$plants.image',
+            category: '$plants.category',
+          }
+        },
+        {
+          $project: {
+            plants: 0,
+          }
+        }
+      ])
+        .toArray();
+      res.send(result)
+    })
+
     //save a plant data in DB-----
     app.post('/plants', verifyToken, async (req, res) => {
       const plant = req.body;
@@ -82,6 +123,30 @@ async function run() {
     app.post('/orders', verifyToken, async (req, res) => {
       const orderInfo = req.body;
       const result = await ordersCollection.insertOne(orderInfo);
+      res.send(result)
+    })
+
+    //cancel or delete order
+    app.delete('/orders/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const order = await ordersCollection.findOne(query);
+      if (order.status === 'delivered') {
+        return res.status(409).send('You cannot cancel an order after delivering')
+      }
+      const result = await ordersCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    //manage plant quantity
+    app.patch('/orders/quantity/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const { quantityToUpdate } = req.body;
+      const filter = { _id: new ObjectId(id) };
+      let updateDoc = {
+        $inc: { quantity: - quantityToUpdate }
+      }
+      const result = await plantsCollection.updateOne(filter, updateDoc);
       res.send(result)
     })
 
