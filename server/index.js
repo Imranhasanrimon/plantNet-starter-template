@@ -58,6 +58,13 @@ async function run() {
       res.send(result)
     })
 
+    //get  user role
+    app.get('/users/role/:email', async (req, res) => {
+      const email = req.params.email;
+      const result = await usersCollection.findOne({ email });
+      res.send({ role: result?.role })
+    })
+
     //get all plants
     app.get('/plants', async (req, res) => {
       const result = await plantsCollection.find().toArray();
@@ -141,13 +148,38 @@ async function run() {
     //manage plant quantity
     app.patch('/orders/quantity/:id', verifyToken, async (req, res) => {
       const id = req.params.id;
-      const { quantityToUpdate } = req.body;
+      const { quantityToUpdate, status } = req.body;
       const filter = { _id: new ObjectId(id) };
+
       let updateDoc = {
         $inc: { quantity: - quantityToUpdate }
       }
+
+      if (status === 'increase') {
+        updateDoc = {
+          $inc: { quantity: quantityToUpdate }
+        }
+      }
+
       const result = await plantsCollection.updateOne(filter, updateDoc);
       res.send(result)
+    })
+
+    //manage user status
+    app.patch('/users/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query)
+      if (!user || user?.status === 'requested') {
+        return res.status(400).send('You have already requested')
+      }
+      const updateDoc = {
+        $set: {
+          status: 'requested'
+        }
+      }
+      const result = await usersCollection.updateOne(query, updateDoc);
+      res.send(result);
     })
 
     //save or update user in DB-----
