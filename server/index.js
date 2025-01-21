@@ -52,8 +52,30 @@ async function run() {
     const plantsCollection = client.db('plantNetDB').collection('plants');
     const ordersCollection = client.db('plantNetDB').collection('orders');
 
+    //verify admin middleware
+    const verifyAdmin = async (req, res, next) => {
+      const email = req.user?.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).send({ message: 'forbidden access! admin only actions' })
+      }
+      next()
+    }
+
+    //verify Seller middleware
+    const verifySeller = async (req, res, next) => {
+      const email = req.user?.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      if (!user || user.role !== 'seller') {
+        return res.status(403).send({ message: 'forbidden access! seller only actions' })
+      }
+      next()
+    }
+
     //get all users
-    app.get('/users/:email', verifyToken, async (req, res) => {
+    app.get('/users/:email', verifyToken, verifyAdmin, async (req, res) => {
       const email = req.params.email;
       const query = { email: { $ne: email } }
       const result = await usersCollection.find(query).toArray();
@@ -122,7 +144,7 @@ async function run() {
     })
 
     //save a plant data in DB-----
-    app.post('/plants', verifyToken, async (req, res) => {
+    app.post('/plants', verifyToken, verifySeller, async (req, res) => {
       const plant = req.body;
       const result = await plantsCollection.insertOne(plant);
       res.send(result)
@@ -185,7 +207,7 @@ async function run() {
     })
 
     //update user role and status
-    app.patch('/user/role/:email', verifyToken, async (req, res) => {
+    app.patch('/user/role/:email', verifyToken, verifyAdmin, async (req, res) => {
       const email = req.params.email;
       const { role } = req.body;
       const query = { email };
