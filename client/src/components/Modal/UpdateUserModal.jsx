@@ -13,10 +13,11 @@ import {
 } from '@headlessui/react'
 import { BsCheckLg } from 'react-icons/bs'
 import { AiOutlineDown } from 'react-icons/ai'
+
 const roles = ['customer', 'seller', 'admin']
 
-const UpdateUserModal = ({ setIsOpen, isOpen }) => {
-  const [selected, setSelected] = useState('')
+const UpdateUserModal = ({ setIsOpen, isOpen, updateRole, role }) => {
+  const [selected, setSelected] = useState(role);
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
@@ -82,9 +83,8 @@ const UpdateUserModal = ({ setIsOpen, isOpen }) => {
                               {({ selected }) => (
                                 <>
                                   <span
-                                    className={`block truncate ${
-                                      selected ? 'font-medium' : 'font-normal'
-                                    }`}
+                                    className={`block truncate ${selected ? 'font-medium' : 'font-normal'
+                                      }`}
                                   >
                                     {role}
                                   </span>
@@ -109,6 +109,7 @@ const UpdateUserModal = ({ setIsOpen, isOpen }) => {
 
                 <div className='flex mt-2 justify-center gap-5'>
                   <button
+                    onClick={() => updateRole(selected)}
                     type='button'
                     className='inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2'
                   >
@@ -134,8 +135,10 @@ const UpdateUserModal = ({ setIsOpen, isOpen }) => {
 UpdateUserModal.propTypes = {
   user: PropTypes.object,
   modalHandler: PropTypes.func,
+  updateRole: PropTypes.func,
   setIsOpen: PropTypes.func,
   isOpen: PropTypes.bool,
+  role: PropTypes.string,
 }
 
 export default UpdateUserModal

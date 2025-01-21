@@ -184,6 +184,18 @@ async function run() {
       res.send(result);
     })
 
+    //update user role and status
+    app.patch('/user/role/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const { role } = req.body;
+      const query = { email };
+      const updateDoc = {
+        $set: { role, status: 'verified' }
+      }
+      const result = await usersCollection.updateOne(query, updateDoc);
+      res.send(result)
+    })
+
     //save or update user in DB-----
     app.post('/users/:email', async (req, res) => {
       const email = req.params.email;
