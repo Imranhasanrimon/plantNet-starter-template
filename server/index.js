@@ -53,8 +53,10 @@ async function run() {
     const ordersCollection = client.db('plantNetDB').collection('orders');
 
     //get all users
-    app.get('/users', async (req, res) => {
-      const result = await usersCollection.find().toArray();
+    app.get('/users/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const query = { email: { $ne: email } }
+      const result = await usersCollection.find(query).toArray();
       res.send(result)
     })
 
