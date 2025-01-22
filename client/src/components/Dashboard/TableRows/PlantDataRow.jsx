@@ -2,11 +2,14 @@ import { useState } from 'react'
 import DeleteModal from '../../Modal/DeleteModal'
 import UpdatePlantModal from '../../Modal/UpdatePlantModal'
 import PropTypes from 'prop-types'
+import useAxiosSecure from '../../../hooks/useAxiosSecure'
+import { toast } from 'react-hot-toast';
 
-const PlantDataRow = ({ inventoryData }) => {
+const PlantDataRow = ({ inventoryData, refetch }) => {
   let [isOpen, setIsOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { image, name, category, price, quantity } = inventoryData || {}
+  const { image, name, category, price, quantity, _id } = inventoryData || {};
+  const axiosSecure = useAxiosSecure()
 
   function openModal() {
     setIsOpen(true)
@@ -14,7 +17,17 @@ const PlantDataRow = ({ inventoryData }) => {
   function closeModal() {
     setIsOpen(false)
   }
-
+  const handleDelete = async () => {
+    try {
+      await axiosSecure.delete(`/inventory/${_id}`)
+      refetch();
+      toast.success('Delete Successful')
+    } catch (err) {
+      toast.error(err.response.data);
+    } finally {
+      setIsOpen(false)
+    }
+  }
   return (
     <tr>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
@@ -54,7 +67,7 @@ const PlantDataRow = ({ inventoryData }) => {
           ></span>
           <span className='relative'>Delete</span>
         </span>
-        <DeleteModal isOpen={isOpen} closeModal={closeModal} />
+        <DeleteModal isOpen={isOpen} handleDelete={handleDelete} closeModal={closeModal} />
       </td>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
         <span
@@ -77,6 +90,7 @@ const PlantDataRow = ({ inventoryData }) => {
 }
 PlantDataRow.propTypes = {
   inventoryData: PropTypes.object,
+  refetch: PropTypes.func,
 }
 
 export default PlantDataRow

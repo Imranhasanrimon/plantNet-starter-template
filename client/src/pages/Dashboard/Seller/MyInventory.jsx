@@ -74,7 +74,7 @@ const MyInventory = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {inventory.map(inventoryData => <PlantDataRow key={inventoryData._id} inventoryData={inventoryData} />)}
+                  {inventory.map(inventoryData => <PlantDataRow key={inventoryData._id} inventoryData={inventoryData} refetch={refetch} />)}
                 </tbody>
               </table>
             </div>
