@@ -83,6 +83,8 @@ const PlantDataRow = ({ inventoryData, refetch }) => {
         <UpdatePlantModal
           isOpen={isEditModalOpen}
           setIsEditModalOpen={setIsEditModalOpen}
+          inventoryData={inventoryData}
+          refetch={refetch}
         />
       </td>
     </tr>

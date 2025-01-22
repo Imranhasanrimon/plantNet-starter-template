@@ -1,4 +1,12 @@
-const UpdatePlantForm = () => {
+import PropTypes from "prop-types"
+
+const UpdatePlantForm = ({ inventoryData }) => {
+  const { image, name, category, price, quantity, description, _id } = inventoryData || {};
+
+  const handleUpdate = async (e) => {
+    e.preventDefault()
+    console.log('update button is clicked', _id);
+  }
   return (
     <div className='w-full flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
       <form>
@@ -10,6 +18,7 @@ const UpdatePlantForm = () => {
                 Name
               </label>
               <input
+                defaultValue={name}
                 className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                 name='name'
                 id='name'
@@ -24,6 +33,7 @@ const UpdatePlantForm = () => {
                 Category
               </label>
               <select
+                defaultValue={category}
                 required
                 className='w-full px-4 py-3 border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                 name='category'
@@ -41,6 +51,7 @@ const UpdatePlantForm = () => {
               </label>
 
               <textarea
+                defaultValue={description}
                 id='description'
                 placeholder='Write plant description here...'
                 className='block rounded-md focus:lime-300 w-full h-32 px-4 py-3 text-gray-800  border border-lime-300 bg-white focus:outline-lime-500 '
@@ -57,6 +68,7 @@ const UpdatePlantForm = () => {
                   Price
                 </label>
                 <input
+                  defaultValue={price}
                   className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                   name='price'
                   id='price'
@@ -72,6 +84,7 @@ const UpdatePlantForm = () => {
                   Quantity
                 </label>
                 <input
+                  defaultValue={quantity}
                   className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                   name='quantity'
                   id='quantity'
@@ -100,10 +113,15 @@ const UpdatePlantForm = () => {
                   </label>
                 </div>
               </div>
+              {image && <div className='flex items-center gap-5 mt-3 '>
+                <p className='text-lime-500 font-semibold text-lg'>size: {20} Bytes</p>
+                <img className='w-28 h-20 object-cover rounded-md border border-lime-500 p-1' src={image} alt="" />
+              </div>}
             </div>
 
             {/* Submit Button */}
             <button
+              onClick={handleUpdate}
               type='submit'
               className='w-full p-3 mt-5 text-center font-medium text-white transition duration-200 rounded shadow-md bg-lime-500 '
             >
@@ -115,5 +133,10 @@ const UpdatePlantForm = () => {
     </div>
   )
 }
-
+UpdatePlantForm.propTypes = {
+  inventoryData: PropTypes.object,
+}
 export default UpdatePlantForm
+
+
+// todo: Dynamic default image for the update plant item

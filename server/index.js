@@ -250,6 +250,18 @@ async function run() {
       res.send(result)
     })
 
+    //Update my inventory
+    app.put('/inventory/:id', async (req, res) => {
+      const id = req.params.id;
+      const plantInfo = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: plantInfo
+      }
+      const result = await plantsCollection.updateOne(query, updateDoc);
+      res.send(result)
+    })
+
 
     // Generate jwt token
     app.post('/jwt', async (req, res) => {

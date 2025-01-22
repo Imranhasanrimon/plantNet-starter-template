@@ -10,7 +10,7 @@ import { Fragment } from 'react'
 
 import UpdatePlantForm from '../Form/UpdatePlantForm'
 
-const UpdatePlantModal = ({ setIsEditModalOpen, isOpen }) => {
+const UpdatePlantModal = ({ setIsEditModalOpen, isOpen, inventoryData, refetch }) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
@@ -49,7 +49,7 @@ const UpdatePlantModal = ({ setIsEditModalOpen, isOpen }) => {
                   Update Plant Info
                 </DialogTitle>
                 <div className='mt-2 w-full'>
-                  <UpdatePlantForm />
+                  <UpdatePlantForm inventoryData={inventoryData} />
                 </div>
                 <hr className='mt-8 ' />
                 <div className='mt-2 '>
@@ -73,6 +73,8 @@ const UpdatePlantModal = ({ setIsEditModalOpen, isOpen }) => {
 UpdatePlantModal.propTypes = {
   setIsEditModalOpen: PropTypes.func,
   isOpen: PropTypes.bool,
+  inventoryData: PropTypes.object,
+  refetch: PropTypes.func,
 }
 
 export default UpdatePlantModal
