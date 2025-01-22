@@ -4,7 +4,9 @@ import useAuth from './../../hooks/useAuth';
 import { TbFidgetSpinner } from 'react-icons/tb';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 const AddPlantForm = () => {
+  const navigate = useNavigate()
   const { user } = useAuth()
   const [uploadImage, setUploadImage] = useState({ image: { name: 'Upload Button' } });
   const [loading, setLoading] = useState(false)
@@ -43,6 +45,7 @@ const AddPlantForm = () => {
       //post request
       await axiosSecure.post('/plants', plantData)
       toast.success('Data Added Successfully')
+      navigate('/dashboard/my-inventory')
     } catch (err) {
       console.log(err);
     } finally {

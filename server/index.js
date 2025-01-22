@@ -95,6 +95,14 @@ async function run() {
       res.send(result)
     })
 
+    //get all Inventories
+    app.get('/inventory/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { 'seller.email': email }
+      const result = await plantsCollection.find(query).toArray();
+      res.send(result)
+    })
+
     //get a single plant
     app.get('/plants/:id', async (req, res) => {
       const id = req.params.id;
