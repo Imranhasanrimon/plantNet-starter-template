@@ -96,8 +96,8 @@ async function run() {
     })
 
     //get all Inventories
-    app.get('/inventory/:email', async (req, res) => {
-      const email = req.params.email;
+    app.get('/inventory/email', verifyToken, verifySeller, async (req, res) => {
+      const email = req.user.email;
       const query = { 'seller.email': email }
       const result = await plantsCollection.find(query).toArray();
       res.send(result)
