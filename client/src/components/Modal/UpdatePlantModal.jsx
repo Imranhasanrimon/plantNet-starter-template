@@ -49,7 +49,7 @@ const UpdatePlantModal = ({ setIsEditModalOpen, isOpen, inventoryData, refetch }
                   Update Plant Info
                 </DialogTitle>
                 <div className='mt-2 w-full'>
-                  <UpdatePlantForm inventoryData={inventoryData} />
+                  <UpdatePlantForm inventoryData={inventoryData} refetch={refetch} />
                 </div>
                 <hr className='mt-8 ' />
                 <div className='mt-2 '>

@@ -151,6 +151,45 @@ async function run() {
       res.send(result)
     })
 
+    //get all orders of a single seller
+    app.get('/orders/seller/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { seller: email }
+      const result = await ordersCollection.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $addFields: {
+            plantId: { $toObjectId: '$plantId' }
+          },
+        },
+        {
+          $lookup: {
+            from: 'plants',
+            localField: 'plantId',
+            foreignField: '_id',
+            as: 'plants'
+          }
+        },
+        {
+          $unwind: '$plants'
+        },
+        {
+          $addFields: {
+            name: '$plants.name',
+          }
+        },
+        {
+          $project: {
+            plants: 0,
+          }
+        }
+      ])
+        .toArray();
+      res.send(result)
+    })
+
     //save a plant data in DB-----
     app.post('/plants', verifyToken, verifySeller, async (req, res) => {
       const plant = req.body;

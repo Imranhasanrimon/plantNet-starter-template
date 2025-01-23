@@ -6,6 +6,7 @@ const UpdatePlantForm = ({ inventoryData }) => {
   const handleUpdate = async (e) => {
     e.preventDefault()
     console.log('update button is clicked', _id);
+
   }
   return (
     <div className='w-full flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
