@@ -25,6 +25,17 @@ const SellerOrderDataRow = ({ myOrder, refetch }) => {
 
   }
 
+  const handleStatus = async (newStatus) => {
+    if (status === newStatus) return toast.error(`Already this status exists`);
+    try {
+      await axiosSecure.patch(`/orders/${_id}`, { newStatus })
+      refetch()
+      toast.success('Status Updated')
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <tr>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
@@ -49,6 +60,8 @@ const SellerOrderDataRow = ({ myOrder, refetch }) => {
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
         <div className='flex items-center gap-2'>
           <select
+            disabled={status === 'delivered'}
+            onChange={(e) => handleStatus(e.target.value)}
             defaultValue={status}
             required
             className='p-1 border-2 border-lime-300 focus:outline-lime-500 rounded-md text-gray-900 whitespace-no-wrap bg-white'

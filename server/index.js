@@ -261,6 +261,20 @@ async function run() {
       res.send(result);
     })
 
+    //manage Order status
+    app.patch('/orders/:id', async (req, res) => {
+      const id = req.params.id;
+      const { newStatus } = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: newStatus
+        }
+      }
+      const result = await ordersCollection.updateOne(query, updateDoc);
+      res.send(result);
+    })
+
     //update user role and status
     app.patch('/user/role/:email', verifyToken, verifyAdmin, async (req, res) => {
       const email = req.params.email;
