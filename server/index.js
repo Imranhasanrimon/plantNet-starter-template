@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 const jwt = require('jsonwebtoken')
 const morgan = require('morgan')
+const nodemailer = require("nodemailer");
 
 const port = process.env.PORT || 9000
 const app = express()
@@ -34,6 +35,31 @@ const verifyToken = async (req, res, next) => {
     req.user = decoded
     next()
   })
+}
+//send email using nodemailer
+const sendEmail = (emailAddress, emailData) => {
+  //create transporter
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for port 465, false for other ports
+    auth: {
+      user: process.env.NODE_MAILER_USER,
+      pass: process.env.NODE_MAILER_PASS,
+    },
+  });
+
+  // verify connection
+  transporter.verify((err, success) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(success);
+    }
+  })
+
+  // transporter.sendMail()
+
 }
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.7hbnv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
