@@ -58,7 +58,22 @@ const sendEmail = (emailAddress, emailData) => {
     }
   })
 
-  // transporter.sendMail()
+  const mailBody = {
+    from: process.env.NODE_MAILER_USER, // sender address
+    to: emailAddress, // list of receivers
+    subject: emailData?.subject, // Subject line
+    html: `<p>${emailData?.message}</p>`, // html body
+  }
+
+  //send email
+  transporter.sendMail(mailBody, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      // console.log(info);
+      console.log('email sent: ' + info?.response);
+    }
+  })
 
 }
 
@@ -227,6 +242,20 @@ async function run() {
     app.post('/orders', verifyToken, async (req, res) => {
       const orderInfo = req.body;
       const result = await ordersCollection.insertOne(orderInfo);
+      //send email
+      if (result?.insertedId) {
+        //to customer
+        sendEmail(orderInfo?.customer?.email, {
+          subject: 'Order Successful',
+          message: `You've placed an order successfully. Transaction Id: ${result?.insertedId}`
+        })
+
+        //to seller
+        sendEmail(orderInfo?.seller, {
+          subject: 'Hurrah!, You have an order to process.',
+          message: `Get the plants ready for ${orderInfo?.customer?.name}`
+        })
+      }
       res.send(result)
     })
 
