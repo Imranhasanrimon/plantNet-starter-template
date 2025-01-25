@@ -4,10 +4,21 @@ import { BsFillCartPlusFill, BsFillHouseDoorFill } from 'react-icons/bs'
 import useRole from '../../../hooks/useRole'
 import { Navigate } from 'react-router-dom'
 import LoadingSpinner from '../../Shared/LoadingSpinner'
+import { useQuery } from '@tanstack/react-query'
+import useAxiosSecure from '../../../hooks/useAxiosSecure'
 
 const AdminStatistics = () => {
   const [role, isLoading] = useRole();
-  if (isLoading) return <LoadingSpinner />
+  const axiosSecure = useAxiosSecure()
+  const { data = {}, isLoading: isLoadingForUseQuery } = useQuery({
+    queryKey: ['adminStat'],
+    queryFn: async () => {
+      const { data } = await axiosSecure('/admin-stat');
+      return data
+    }
+  })
+
+  if (isLoading || isLoadingForUseQuery) return <LoadingSpinner />
   if (role === 'customer') return <Navigate to='/dashboard/my-orders' />
   if (role === 'seller') return <Navigate to='/dashboard/my-inventory' />
   return (
@@ -59,7 +70,7 @@ const AdminStatistics = () => {
                 Total Plants
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                120
+                {data?.totalPlants}
               </h4>
             </div>
           </div>
@@ -75,7 +86,7 @@ const AdminStatistics = () => {
                 Total User
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                10
+                {data?.totalUsers}
               </h4>
             </div>
           </div>
