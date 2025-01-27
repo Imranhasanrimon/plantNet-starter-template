@@ -442,3 +442,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`plantNet is running on port ${port}`)
 })
+//if the index.js file is the big one, it should be divided into some other files
