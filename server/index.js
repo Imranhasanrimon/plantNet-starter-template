@@ -370,7 +370,7 @@ async function run() {
       res.send(result)
     })
 
-    //admin Stat
+    //admin Stat 
     app.get('/admin-stat', async (req, res) => {
       const totalUsers = await usersCollection.estimatedDocumentCount();
       const totalPlants = await plantsCollection.estimatedDocumentCount();
