@@ -38,7 +38,7 @@ const AdminStatistics = () => {
                 Total Revenue
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                $120
+                ${data?.totalRevenue}
               </h4>
             </div>
           </div>
@@ -54,7 +54,7 @@ const AdminStatistics = () => {
                 Total Orders
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                120
+                {data?.totalOrders}
               </h4>
             </div>
           </div>

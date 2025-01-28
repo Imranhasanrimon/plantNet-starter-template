@@ -391,7 +391,7 @@ async function run() {
           }
         }
       ]).next()
-      res.send({ totalUsers, totalPlants, totalRevenue, totalOrders })
+      res.send({ totalUsers, totalPlants, ...ordersDetails })
     })
 
 
