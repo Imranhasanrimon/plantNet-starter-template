@@ -374,9 +374,11 @@ async function run() {
     app.get('/admin-stat', async (req, res) => {
       const totalUsers = await usersCollection.estimatedDocumentCount();
       const totalPlants = await plantsCollection.estimatedDocumentCount();
+      //_________________________________________________
       // const orderData = await ordersCollection.find().toArray();
       // const totalRevenue = orderData.reduce((sum, currentPrice) => sum + currentPrice.price, 0)
       // const totalOrders = orderData.length
+      //_________________________________________________
       const ordersDetails = await ordersCollection.aggregate([
         {
           $group: {
