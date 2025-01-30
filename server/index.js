@@ -374,6 +374,33 @@ async function run() {
     app.get('/admin-stat', async (req, res) => {
       const totalUsers = await usersCollection.estimatedDocumentCount();
       const totalPlants = await plantsCollection.estimatedDocumentCount();
+      //generating ChartData...
+      const chartData = await ordersCollection.aggregate([
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: { $toDate: '$_id' },
+              }
+            },
+            quantity: {
+              $sum: '$quantity'
+            },
+            price: { $sum: '$price' },
+            order: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            date: '$_id',
+            quantity: 1,
+            order: 1,
+            price: 1,
+          }
+        }
+      ]).next();
       //_________________________________________________
       // const orderData = await ordersCollection.find().toArray();
       // const totalRevenue = orderData.reduce((sum, currentPrice) => sum + currentPrice.price, 0)
@@ -393,7 +420,7 @@ async function run() {
           }
         }
       ]).next()
-      res.send({ totalUsers, totalPlants, ...ordersDetails })
+      res.send({ totalUsers, totalPlants, ...ordersDetails, chartData: [chartData] })
     })
 
 
