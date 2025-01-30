@@ -6,6 +6,7 @@ import { Navigate } from 'react-router-dom'
 import LoadingSpinner from '../../Shared/LoadingSpinner'
 import { useQuery } from '@tanstack/react-query'
 import useAxiosSecure from '../../../hooks/useAxiosSecure'
+import Chart from '../../../pages/Dashboard/charts/Chart'
 
 const AdminStatistics = () => {
   const [role, isLoading] = useRole();
@@ -96,6 +97,7 @@ const AdminStatistics = () => {
           {/*Sales Bar Chart */}
           <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-2'>
             {/* Chart goes here.. */}
+            <Chart />
           </div>
           {/* Calender */}
           <div className=' relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden'>
