@@ -423,6 +423,17 @@ async function run() {
       res.send({ totalUsers, totalPlants, ...ordersDetails, chartData: [chartData] })
     })
 
+    //create payment intent
+    app.post('/create-payment-intent', verifyToken, async (req, res) => {
+      const { quantity, plantId } = req.body;
+      const plant = await plantsCollection.findOne({ _id: new ObjectId(plantId) });
+
+      if (!plant) {
+        return res.status(400).send({ message: 'Plant not found' })
+      }
+      const totalPrice = quantity * plant?.price * 100 //total price in cent
+      console.log(totalPrice);
+    })
 
     // Generate jwt token
     app.post('/jwt', async (req, res) => {

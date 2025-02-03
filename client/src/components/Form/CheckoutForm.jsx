@@ -5,8 +5,24 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
 import './CheckoutForm.css';
+import Button from '../Shared/Button/Button';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ closeModal, handlePurchase, purchaseInfo }) => {
+    const [clientSecret, setClientSecret] = useState('');
+    const axiosSecure = useAxiosSecure()
+    useEffect(() => {
+        getPaymentIntent()
+    }, []);
+    const getPaymentIntent = async () => {
+        try {
+            const { data } = await axiosSecure.post(`/create-payment-intent`, { quantity: purchaseInfo?.quantity, plantId: purchaseInfo?.plantId })
+        } catch (err) {
+            console.log(err);
+        }
+    }
     const stripe = useStripe();
     const elements = useElements();
 
@@ -60,12 +76,17 @@ const CheckoutForm = () => {
                     },
                 }}
             />
-            <button type="submit" disabled={!stripe}>
-                Pay
-            </button>
+            <div className='flex gap-5'>
+                <Button disabled={!stripe} label={`Pay $${purchaseInfo?.price}`} type='submit' />
+                <button type='button' onClick={closeModal} className='btn btn-error'>Cancel</button>
+            </div>
         </form>
     );
 };
-
+CheckoutForm.propTypes = {
+    closeModal: PropTypes.func,
+    handlePurchase: PropTypes.func,
+    purchaseInfo: PropTypes.object,
+}
 
 export default CheckoutForm;
