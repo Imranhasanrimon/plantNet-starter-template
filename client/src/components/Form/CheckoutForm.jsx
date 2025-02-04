@@ -15,10 +15,12 @@ const CheckoutForm = ({ closeModal, handlePurchase, purchaseInfo }) => {
     const axiosSecure = useAxiosSecure()
     useEffect(() => {
         getPaymentIntent()
-    }, []);
+    }, [purchaseInfo]);
+    console.log(clientSecret);
     const getPaymentIntent = async () => {
         try {
             const { data } = await axiosSecure.post(`/create-payment-intent`, { quantity: purchaseInfo?.quantity, plantId: purchaseInfo?.plantId })
+            setClientSecret(data);
         } catch (err) {
             console.log(err);
         }
