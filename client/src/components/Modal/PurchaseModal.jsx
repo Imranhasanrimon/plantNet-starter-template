@@ -53,9 +53,9 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
     })
   }
 
-  const handlePurchase = async () => {
+  const handlePurchase = async (txid) => {
     try {
-      await axiosSecure.post('orders', purchaseInfo);
+      await axiosSecure.post('orders', { ...purchaseInfo, transactionId: txid });
       //decrease quantity from plantsCollection
       await axiosSecure.patch(`/orders/quantity/${_id}`, { quantityToUpdate: totalQuantity });
       toast.success('Order Successful!')

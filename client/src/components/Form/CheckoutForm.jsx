@@ -16,11 +16,10 @@ const CheckoutForm = ({ closeModal, handlePurchase, purchaseInfo }) => {
     useEffect(() => {
         getPaymentIntent()
     }, [purchaseInfo]);
-    console.log(clientSecret);
     const getPaymentIntent = async () => {
         try {
             const { data } = await axiosSecure.post(`/create-payment-intent`, { quantity: purchaseInfo?.quantity, plantId: purchaseInfo?.plantId })
-            setClientSecret(data);
+            setClientSecret(data.clientSecret);
         } catch (err) {
             console.log(err);
         }
@@ -57,6 +56,24 @@ const CheckoutForm = ({ closeModal, handlePurchase, purchaseInfo }) => {
             console.log('[error]', error);
         } else {
             console.log('[PaymentMethod]', paymentMethod);
+        }
+
+        //confirm payment
+        const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: card,
+                billing_details: {
+                    name: purchaseInfo?.customer?.name,
+                    email: purchaseInfo?.customer?.email,
+                },
+            },
+        })
+        if (paymentIntent.status === "succeeded") {
+            try {
+                handlePurchase(paymentIntent?.id)
+            } catch (err) {
+                console.log(err);
+            }
         }
     };
 
